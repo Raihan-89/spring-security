@@ -1,5 +1,6 @@
 package com.raihan.springsecurity.services.implementation;
 
+import com.raihan.springsecurity.common.GenericResponse;
 import com.raihan.springsecurity.entity.Users;
 import com.raihan.springsecurity.model.UserDto;
 import com.raihan.springsecurity.model.UsersInfoResponse;
@@ -9,6 +10,7 @@ import com.raihan.springsecurity.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class UsersServiceImp implements UsersService {
     private final UsersRepository usersRepository;
 
+    @Override
     public UsersInfoResponse getAllUserInfo() {
         log.info("Fetching users information from database");
 
@@ -43,6 +46,7 @@ public class UsersServiceImp implements UsersService {
                 .build();
     }
 
+    @Override
     public String saveUserInfo(UserDto userDto) {
 
         Users user = Users.builder()
@@ -57,5 +61,22 @@ public class UsersServiceImp implements UsersService {
         usersRepository.save(user);
         log.info("User info saved successfully");
         return "User info saved successfully";
+    }
+
+    @Override
+    public GenericResponse updateUser(UserDto userDto) {
+        Users user = usersRepository.findUsersByEmail(userDto.getEmail());
+
+        if  (user == null) {
+            return new GenericResponse(HttpStatus.NOT_FOUND.toString(), "User not found with provided email");
+        }
+
+        user.setFullName(userDto.getFullName() != null ? userDto.getFullName() : user.getFullName());
+        user.setPhoneNumber(userDto.getPhoneNumber() != null ? userDto.getPhoneNumber() : user.getPhoneNumber());
+        user.setPassword(userDto.getPassword() != null ? userDto.getPassword() : user.getPassword());
+
+        usersRepository.save(user);
+
+        return new GenericResponse(HttpStatus.CREATED.toString(), "User info updated");
     }
 }

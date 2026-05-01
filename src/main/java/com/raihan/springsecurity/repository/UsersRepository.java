@@ -18,4 +18,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
                            email as email
                     from user_info;""", nativeQuery = true)
     List<UsersInfoProjection> getAllUser();
+
+    Users findUsersByEmail(String email);
 }

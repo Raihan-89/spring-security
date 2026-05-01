@@ -20,13 +20,13 @@ public class Users {
     @Column(name = "full_name", columnDefinition = "VARCHAR(50)")
     private String fullName;
 
-    @Column(name = "username", columnDefinition = "VARCHAR(10)", nullable = false)
+    @Column(name = "username", columnDefinition = "VARCHAR(10)", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "phone_number", columnDefinition = "VARCHAR(11)")
+    @Column(name = "phone_number", columnDefinition = "VARCHAR(11)", unique = true)
     private String phoneNumber;
 
-    @Column(name = "email", columnDefinition = "VARCHAR(50)", nullable = false)
+    @Column(name = "email", columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password", columnDefinition = "VARCHAR(100)", nullable = false)

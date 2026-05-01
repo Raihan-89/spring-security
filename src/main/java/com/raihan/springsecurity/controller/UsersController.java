@@ -29,4 +29,11 @@ public class UsersController {
 
         return ResponseEntity.ok(usersService.saveUserInfo(userDto));
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserDto userDto) {
+        log.info("Received request to update user {} info", userDto.getUsername());
+
+        return ResponseEntity.ok(usersService.updateUser(userDto));
+    }
 }
