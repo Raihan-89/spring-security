@@ -1,0 +1,32 @@
+package com.raihan.springsecurity.controller;
+
+import com.raihan.springsecurity.model.UserDto;
+import com.raihan.springsecurity.services.UsersService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/user")
+@RequiredArgsConstructor
+@Slf4j
+public class UsersController {
+    private final UsersService usersService;
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getAllUsersInfo() {
+        log.info("Received request to get all users information");
+
+        return ResponseEntity.ok(usersService.getAllUserInfo());
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<?> saveUserInfo(@RequestBody UserDto userDto) {
+        log.info("Received request to save user information");
+
+        return ResponseEntity.ok(usersService.saveUserInfo(userDto));
+    }
+}
