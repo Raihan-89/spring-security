@@ -4,8 +4,6 @@ import com.raihan.springsecurity.model.UserDto;
 import com.raihan.springsecurity.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +28,17 @@ public class UsersController {
         return ResponseEntity.ok(usersService.saveUserInfo(userDto));
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateUserInfo(@RequestBody UserDto userDto) {
         log.info("Received request to update user {} info", userDto.getUsername());
 
         return ResponseEntity.ok(usersService.updateUser(userDto));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestParam("id") Integer id) {
+        log.info("Received Request to delete user with id: {}", id);
+
+        return ResponseEntity.ok(usersService.deleteUser(id));
     }
 }

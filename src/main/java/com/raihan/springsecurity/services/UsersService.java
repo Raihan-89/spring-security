@@ -7,7 +7,9 @@ import com.raihan.springsecurity.model.UsersInfoResponse;
 public interface UsersService {
     UsersInfoResponse getAllUserInfo();
 
-    String saveUserInfo(UserDto userDto);
+    GenericResponse saveUserInfo(UserDto userDto);
 
     GenericResponse updateUser(UserDto user);
+
+    GenericResponse deleteUser(Integer id);
 }

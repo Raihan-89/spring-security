@@ -20,4 +20,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     List<UsersInfoProjection> getAllUser();
 
     Users findUsersByEmail(String email);
+
+    Users findUsersByUsernameOrEmailOrPhoneNumber(String username, String email, String phoneNumber);
 }

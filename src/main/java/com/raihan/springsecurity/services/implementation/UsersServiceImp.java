@@ -9,7 +9,6 @@ import com.raihan.springsecurity.services.UsersInfoProjection;
 import com.raihan.springsecurity.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,17 @@ public class UsersServiceImp implements UsersService {
     }
 
     @Override
-    public String saveUserInfo(UserDto userDto) {
+    public GenericResponse saveUserInfo(UserDto userDto) {
+
+        Users existingUser = usersRepository.findUsersByUsernameOrEmailOrPhoneNumber(
+                userDto.getUsername(),
+                userDto.getEmail(),
+                userDto.getPhoneNumber()
+        );
+
+        if (existingUser != null) {
+            return new GenericResponse(HttpStatus.CONFLICT.toString(), "User already present with these information");
+        }
 
         Users user = Users.builder()
                 .fullName(userDto.getFullName())
@@ -60,7 +69,7 @@ public class UsersServiceImp implements UsersService {
 
         usersRepository.save(user);
         log.info("User info saved successfully");
-        return "User info saved successfully";
+        return new GenericResponse(HttpStatus.CREATED.toString(), "User Created Successfully");
     }
 
     @Override
@@ -78,5 +87,19 @@ public class UsersServiceImp implements UsersService {
         usersRepository.save(user);
 
         return new GenericResponse(HttpStatus.CREATED.toString(), "User info updated");
+    }
+
+    @Override
+    public GenericResponse deleteUser(Integer id) {
+        Users user = usersRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return new GenericResponse(HttpStatus.NOT_FOUND.toString(), "User "+ id +" is already not present in the system to delete");
+        }
+
+        usersRepository.deleteById(id);
+        log.info("User {} successfully deleted from the system", id);
+
+        return new GenericResponse(HttpStatus.OK.toString(), "User deleted successfully");
     }
 }
