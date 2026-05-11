@@ -1,6 +1,8 @@
 package com.raihan.springsecurity.configuration;
 
+import com.raihan.springsecurity.filters.JWTAuthFilter;
 import com.raihan.springsecurity.services.implementation.UsersDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,14 +16,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author Raihan-89
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JWTAuthFilter jwtAuthFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
@@ -30,8 +35,7 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers("/api/jwt/authenticate").permitAll()
                                 .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
