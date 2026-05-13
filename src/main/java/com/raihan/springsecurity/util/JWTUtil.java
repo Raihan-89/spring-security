@@ -2,7 +2,6 @@ package com.raihan.springsecurity.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import java.util.Date;
 @Component
 public class JWTUtil {
 
-    private static final String SECRET = "ThisIsTheSecretKeyToGenerateJWTToken";
+    private static final String SECRET = "ThisIsTheSecretKeyToGenerateJWTTokenThatIsLongEnoughForHS256";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
@@ -25,7 +24,7 @@ public class JWTUtil {
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key)
                 .compact();
     }
 
@@ -35,14 +34,14 @@ public class JWTUtil {
 
     private Claims extractClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(key)
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean validateToken(String username, UserDetails userDetails, String token) {
-        return username.equals(userDetails.getUsername()) && isTokenExpired(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
