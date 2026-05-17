@@ -1,10 +1,13 @@
 package com.raihan.springsecurity.configuration;
 
+import com.raihan.springsecurity.enums.Permissions;
+import com.raihan.springsecurity.enums.Role;
 import com.raihan.springsecurity.filters.JWTAuthFilter;
 import com.raihan.springsecurity.services.implementation.UsersDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,6 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/api/jwt/authenticate").permitAll()
+                                //.requestMatchers("/api/user/info").hasRole(Role.USER.name())
+                                .requestMatchers(HttpMethod.GET,"/api/user/**").hasAuthority(Permissions.READ.name())
+                                .requestMatchers(HttpMethod.POST,"/api/user/**").hasAuthority(Permissions.WRITE.name())
+                                .requestMatchers(HttpMethod.DELETE,"/api/user/**").hasAuthority(Permissions.DELETE.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
