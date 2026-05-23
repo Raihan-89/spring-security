@@ -24,6 +24,13 @@ public class UsersController {
         return ResponseEntity.ok(usersService.getAllUserInfo());
     }
 
+    @GetMapping("/get-only")
+    public ResponseEntity<?> getUserInfoOfTheSameUser(@RequestParam("id") Integer id) {
+        log.info("Received request to get particular user information");
+
+        return ResponseEntity.ok(usersService.getParticularUserInfo(id));
+    }
+
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('WRITE')")
     public ResponseEntity<?> saveUserInfo(@RequestBody UserDto userDto) {

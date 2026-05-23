@@ -12,4 +12,6 @@ public interface UsersService {
     GenericResponse updateUser(UserDto user);
 
     GenericResponse deleteUser(Integer id);
+
+    UsersInfoResponse getParticularUserInfo(Integer id);
 }

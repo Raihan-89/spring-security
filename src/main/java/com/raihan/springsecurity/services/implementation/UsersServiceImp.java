@@ -9,9 +9,12 @@ import com.raihan.springsecurity.services.UsersInfoProjection;
 import com.raihan.springsecurity.services.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -101,5 +104,27 @@ public class UsersServiceImp implements UsersService {
         log.info("User {} successfully deleted from the system", id);
 
         return new GenericResponse(HttpStatus.OK.toString(), "User deleted successfully");
+    }
+
+    @PostAuthorize("returnObject.userList.get(0).username == authentication.name")
+    @Override
+    public UsersInfoResponse getParticularUserInfo(Integer id) {
+        log.info("Fetching user information from database");
+
+        Users user = usersRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return UsersInfoResponse.builder()
+                    .userList(null)
+                    .totalUser(0)
+                    .build();
+        }
+
+        UserDto userDto = new UserDto(user);
+
+        return UsersInfoResponse.builder()
+                .userList(Collections.singletonList(userDto))
+                .totalUser(1)
+                .build();
     }
 }
