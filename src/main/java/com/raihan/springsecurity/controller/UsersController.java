@@ -17,7 +17,7 @@ public class UsersController {
 
     @GetMapping("/info")
 //    @PreAuthorize("hasAuthority('READ')")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> getAllUsersInfo() {
         log.info("Received request to get all users information");
 
